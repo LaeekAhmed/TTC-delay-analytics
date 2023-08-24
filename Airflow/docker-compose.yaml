@@ -46,7 +46,7 @@
 ---
 version: '3.8'
 
-# 👉 all airflow services at the bottom will have these ENV's and other props :
+# 💡 NOTE: all airflow services at the bottom will have these ENV's and other props which are set in here:
 x-airflow-common:
   &airflow-common
   # In order to add custom dependencies or upgrade provider packages you can use your extended image.
@@ -84,11 +84,6 @@ x-airflow-common:
     BIGQUERY_DATASET: 'nyc_trips_data'
 
     # ${...} => from local .env file
-    PG_HOST: '${PG_HOST}'
-    PG_USER: '${PG_USER}'
-    PG_PASSWORD: '${PG_PASSWORD}'
-    PG_PORT: '${PG_PORT}'
-    PG_DATABASE: '${PG_DATABASE}'
 
   volumes:
     - ./dags:/opt/airflow/dags
@@ -107,9 +102,9 @@ services:
   postgres:
     image: postgres:13
     environment:
-      POSTGRES_USER: airflow
-      POSTGRES_PASSWORD: airflow
-      POSTGRES_DB: airflow
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
     healthcheck:
