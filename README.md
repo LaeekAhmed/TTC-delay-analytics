@@ -6,7 +6,7 @@ Analyzing TTC bus, subway & streetcar delay data to identify delay hotspots, roo
 
 ## Source data
 
-Data source - TTC bus, subway. streetcar delay data : [Open Data Catalogue - City of Toronto Open Data Portal](https://open.toronto.ca/catalogue/?search=ttc%20delay%20data&sort=score%20desc){:target="_blank"}
+Data source - TTC bus, subway. streetcar delay data : [Open Data Catalogue - City of Toronto Open Data Portal](https://open.toronto.ca/catalogue/?search=ttc%20delay%20data&sort=score%20desc)
 
 ### Understading the source data
 
@@ -75,7 +75,7 @@ downloads data from the Toronto open portal website, converts it to parquet form
 
 ## Dashboard
 
-[looker studio dashboard ↗](https://lookerstudio.google.com/reporting/c2f8e496-b46b-4f07-8025-635abf038a21){:target="_blank"}
+[looker studio dashboard ↗](https://lookerstudio.google.com/reporting/c2f8e496-b46b-4f07-8025-635abf038a21)
 
 ![Alt text](images/image-3.png)
 
