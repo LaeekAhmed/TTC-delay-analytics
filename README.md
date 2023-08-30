@@ -2,7 +2,7 @@
 
 Analyzing TTC bus, subway & streetcar delay data to identify delay hotspots, root causes, and find valuable insights by creating an ETL (Extract, Transform, Load) pipeline and using Looker Studio to create dashboards.
 
-![diagram](images/image.png)
+![diagram](images/image.png){:target="_blank"}
 
 ## Source data
 
@@ -49,7 +49,7 @@ This setup creates VM nstance using gcp and will perform all tasks using the VM.
 
 Architecture Diagram (ETL pipeline) :
 
-![diagram](images/image.png)
+![diagram](images/image.png){:target="_blank"}
 
 - We will use **Terraform** to setup the infrastructure 
 - We will use a **VM instance** to run everything
@@ -64,12 +64,12 @@ Can also be increased to every month but that is not cost effective
 
 Airflow Dags :
 
-![Alt text](images/image-5.png)
+![Alt text](images/image-5.png){:target="_blank"}
 
 [src_to_gcs_dag.py](Airflow/dags/src_to_gcs_dag.py)
 downloads data from the Toronto open portal website, converts it to parquet form, loads it into gcs bucket and removes it from local folder once it is available on the cloud.
 
-![Alt text](images/image-6.png)
+![Alt text](images/image-6.png){:target="_blank"}
 
 [dataproc_job_dag.py](Airflow/dags/dataproc_job_dag.py) uploads the main python file [spark_job.py](Airflow/dags/spark_job.py) for running the spark job to gcs bucket so dataproc can fetch it, set the service account which authorizes the airflow container to work with gcp services, create a cluster, run the job and then delete it (saves cost)
 
@@ -77,8 +77,8 @@ downloads data from the Toronto open portal website, converts it to parquet form
 
 [looker studio dashboard ↗](https://lookerstudio.google.com/reporting/c2f8e496-b46b-4f07-8025-635abf038a21)
 
-![Alt text](images/image-3.png)
+![Alt text](images/image-3.png){:target="_blank"}
 
 There are no delay records for July - December 2023 as this image was taken in August 2023 
 
-![Alt text](images/image-4.png)
+![Alt text](images/image-4.png){:target="_blank"}
