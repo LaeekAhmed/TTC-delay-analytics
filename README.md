@@ -66,11 +66,12 @@ Airflow Dags :
 
 ![Alt text](images/image-5.png)
 
-Download data from the Toronto open portal website, convert to parquet, load into gcs bucket, remove data from local folder
+[src_to_gcs_dag.py](Airflow/dags/src_to_gcs_dag.py)
+downloads data from the Toronto open portal website, converts it to parquet form, loads it into gcs bucket and removes it from local folder once it is available on the cloud.
 
 ![Alt text](images/image-6.png)
 
-upload the main python file for running the spark job to gcs bucket so dataproc can fetch it, set the service account which authorizes the airflow container to work with gcp services, create a cluster, run the job and then delete it (saves cost)
+[dataproc_job_dag.py](Airflow/dags/dataproc_job_dag.py) uploads the main python file [spark_job.py](Airflow/dags/spark_job.py) for running the spark job to gcs bucket so dataproc can fetch it, set the service account which authorizes the airflow container to work with gcp services, create a cluster, run the job and then delete it (saves cost)
 
 ## Dashboard
 
