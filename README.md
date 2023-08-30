@@ -2,7 +2,7 @@
 
 Analyzing TTC bus, subway & streetcar delay data to identify delay hotspots, root causes, and find valuable insights by creating an ETL (Extract, Transform, Load) pipeline and using Looker Studio to create dashboards.
 
-![diagram](image.png)
+![diagram](images/image.png)
 
 ## Source data
 
@@ -49,7 +49,7 @@ This setup creates VM nstance using gcp and will perform all tasks using the VM.
 
 Architecture Diagram (ETL pipeline) :
 
-![diagram](image.png)
+![diagram](images/image.png)
 
 - We will use **Terraform** to setup the infrastructure 
 - We will use a **VM instance** to run everything
