@@ -3,3 +3,4 @@ pyarrow
 pandas
 sqlalchemy
 psycopg2-binary
+openpyxl

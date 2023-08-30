@@ -41,8 +41,13 @@ echo "Setting up Pyspark"
 #Get correct name for py4j library
 py4j="$(basename ${SPARK_HOME}/python/lib/py4j*)"
 echo "py4j versions is $py4j"
-export py4j=$(basename "${SPARK_HOME}/python/lib/py4j*")
+echo 'export py4j=$(basename "${SPARK_HOME}/python/lib/py4j*")' >> ~/.bashrc
 
 echo '' >> ~/.bashrc
 echo 'export PYTHONPATH="${SPARK_HOME}/python/:$PYTHONPATH"' >> ~/.bashrc
-echo 'export PYTHONPATH="${SPARK_HOME}/python/lib/${py4j}:$PYTHONPATH"' >> ~/.bashrc
+echo 'export PYTHONPATH="${SPARK_HOME}/python/lib/${py4j}:$PYTHONPATH"' >> ~/.
+
+export PYTHONPATH=/home/shaikh/spark/spark-3.3.3-bin-hadoop3/python/:/home/shaikh/spark/spark-3.3.3-bin-hadoop3/python/lib/py4j-0.10.9.5-src.zip:/home/shaikh/spark/spark-3.3.3-bin-hadoop3/python/:
+export PYTHONPATH=/home/shaikh/spark/spark-3.3.3-bin-hadoop3/python/lib/py4j-0.10.9.5-src.zip:/home/shaikh/spark/spark-3.3.3-bin-hadoop3/python/lib/py4j-0.10.9.5-src.zip:/home/shaikh/spark/spark-3.3.3-bin-hadoop3/python/:
+
+# ref : https://github.com/boisalai/de-zoomcamp-2023/blob/main/week5.md#how-to-use-pyspark for import pyspark error

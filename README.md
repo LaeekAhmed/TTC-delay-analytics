@@ -76,6 +76,12 @@ Check if the DAGs are running automatically as per the schedule and **don't** re
 
 Spark ? python ? source + gcs
 
+has to use `gcloud auth login` before running `gsutil cp notebooks/ttc-delay-code.parquet gs://ttc_data_lake_ttc-data-analytics/subway_delay_data/`
+
+https://stackoverflow.com/questions/49302859/gsutil-serviceexception-401-anonymous-caller-does-not-have-storage-objects-list
+
+probably becuase the vm instance by default creates a service account with limited permissions and uses that within the vm.
+
 ---
 #### 3.3 Load
 
@@ -88,6 +94,63 @@ dbt ? spark ?
 
 while downloading spark, refer https://spark.apache.org/downloads.html which will redirect to https://www.apache.org/dyn/closer.lua/spark/spark-3.3.3/spark-3.3.3-bin-hadoop3.tgz (the actual downloadable file!)
 
+
+to read data from gcs, we need to do this [read data from gcs using spark (from boslai's notes)](https://github.com/boisalai/de-zoomcamp-2023/blob/main/week5.md#setup-to-read-from-gcs)
+
+> Download the connector `jar` file
+
+```bash
+(base) shaikh@ttc-da-instance:~/ttc_delay_analytics/notebooks
+$ mkdir lib
+
+(base) shaikh@ttc-da-instance:~/ttc_delay_analytics/notebooks
+$ cd lib
+
+(base) shaikh@ttc-da-instance:~/ttc_delay_analytics/notebooks/lib
+$ gsutil cp gs://hadoop-lib/gcs/gcs-connector-hadoop3-2.2.11.jar gcs-connector-hadoop3-2.2.11.jar
+Copying gs://hadoop-lib/gcs/gcs-connector-hadoop3-2.2.11.jar...
+/ [0 files][    0.0 B/ 34.8 MiB]                                              / [1 files][ 34.8 MiB/ 34.8 MiB]                                                
+Operation completed over 1 objects/34.8 MiB.                                     
+
+(base) shaikh@ttc-da-instance:~/ttc_delay_analytics/notebooks/lib
+$ ls
+gcs-connector-hadoop3-2.2.11.jar
+
+(base) shaikh@ttc-da-instance:~/ttc_delay_analytics/notebooks/lib
+```
+---
+
+> setup configs 
+
+```python
+credentials_location = "/home/shaikh/.google/credentials/ttc-data-analytics-key.json"
+
+# Configure SparkSession
+spark = SparkSession.builder \
+    .master("local[*]") \
+    .appName('spark_etl') \
+    .config("spark.jars", "./lib/gcs-connector-hadoop3-2.2.11.jar, ./lib/spark-bigquery-with-dependencies_2.12-0.24.0.jar") \
+    .config("spark.hadoop.google.cloud.auth.service.account.enable", "true") \
+    .config("spark.hadoop.google.cloud.auth.service.account.json.keyfile", credentials_location) \
+    .getOrCreate()
+
+# Configure Hadoop Configuration
+hadoop_conf = spark.sparkContext._jsc.hadoopConfiguration()
+hadoop_conf.set("fs.AbstractFileSystem.gs.impl", "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFS")
+hadoop_conf.set("fs.gs.impl", "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem")
+hadoop_conf.set("fs.gs.auth.service.account.json.keyfile", credentials_location)
+hadoop_conf.set("fs.gs.auth.service.account.enable", "true")
+```
+
+> NOTE: You might have to restart the notebook setup using `jupyter notebook` to make sure the changes are applied!
+
+**In short:**
+
+Downloading `gcs-connector-hadoopx.x.x.jar` file     
+
+Specifying the path to the file using `.config("spark.jars", "./lib/gcs-connector-hadoop3-2.2.11.jar, ./lib/spark-bigquery-with-dependencies_2.12-0.24.0.jar")` within the `spark = SparkSession.builder` when running in a notebook
+
+
 dbt jobs can be run manually from the web ui or can be orchestrated using airflow
 we use the API option under job settings :
 
@@ -99,8 +162,17 @@ We can get the **Job Id**, **Project Id** and the **Account Id** from the same p
 
 Check out [Airflow and dbt Cloud | dbt Developer Hub (getdbt.com)](https://docs.getdbt.com/guides/orchestration/airflow-and-dbt-cloud/1-airflow-and-dbt-cloud), we have a `DbtCloudRunJobOperator()` to do run dbt jobs from Airflow dags!
 
-The DataProc cluster can be deleted after it finished the spark jobs so as to avoid running charges, we have Operators for that, 
-refer [airflow/dags/dataproc_spark_job_dag.py(github.com)](https://github.com/MarcosMJD/ghcn-d/blob/main/airflow/dags/dataproc_spark_job_dag.py)
+> Google Cloud Dataproc Operators
+
+Dataproc is a managed Apache Spark and Apache Hadoop service that lets you take advantage of open source data tools for batch processing, querying, streaming and machine learning.  
+
+Dataproc automation helps you create clusters quickly, manage them easily, and save money by turning clusters off when you don’t need them.
+
+The DataProc cluster can also be deleted after it finished the spark jobs so as to avoid storage charges, we have Operators for that, refer [airflow/dags/dataproc_spark_job_dag.py(github.com)](https://github.com/MarcosMJD/ghcn-d/blob/main/airflow/dags/dataproc_spark_job_dag.py)
+
+With Dataproc, we don’t need to use the same instructions (hadoop, gcp auth configs) as before to establish the connection with Google Cloud Storage (GCS). Dataproc is already configured to access GCS.
+
+https://stackoverflow.com/questions/57355914/how-we-can-create-dataproc-cluster-using-apache-airflow-api
 
 ---
 ## 4. Visualization

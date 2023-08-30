@@ -76,12 +76,17 @@ x-airflow-common:
     # WARNING: Use _PIP_ADDITIONAL_REQUIREMENTS option ONLY for a quick checks
     # for other purpose (development, test and especially production usage) build/extend Airflow image.
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
-    GOOGLE_APPLICATION_CREDENTIALS: /.google/credentials/google_credentials.json
-    AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: 'google-cloud-platform://?extra__google_cloud_platform__key_path=/.google/credentials/google_credentials.json'
+    GOOGLE_APPLICATION_CREDENTIALS: /.google/credentials/ttc-data-analytics-key.json
+    AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: 'google-cloud-platform://?extra__google_cloud_platform__key_path=/.google/credentials/ttc-data-analytics-key.json'
     
-    GCP_PROJECT_ID: 'zoom-camp-2023'
-    GCP_GCS_BUCKET: 'nyc_data_lake'
-    BIGQUERY_DATASET: 'nyc_trips_data'
+    # for gcp
+    GCP_PROJECT_ID: "${GCP_PROJECT_ID}"
+    GCP_GCS_BUCKET: "${GCP_GCS_BUCKET}"
+    BIGQUERY_DATASET: "${BIGQUERY_DATASET}"
+    GCP_REGION: 'us-east4-b'
+
+    # for dataproc dag
+    GCP_DATAPROC_CLUSTER: 'ttc-da-cluster'
 
     # ${...} => from local .env file
 
@@ -101,10 +106,12 @@ services:
   # for airflow's internal use (metadata):
   postgres:
     image: postgres:13
+    
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
     healthcheck:
