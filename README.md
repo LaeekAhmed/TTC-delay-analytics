@@ -8,7 +8,7 @@ Analyzing TTC bus, subway & streetcar delay data to identify delay hotspots, roo
 
 Data source - TTC bus, subway. streetcar delay data : [Open Data Catalogue - City of Toronto Open Data Portal](https://open.toronto.ca/catalogue/?search=ttc%20delay%20data&sort=score%20desc)
 
-### Understading the source data
+### Understanding the source data
 
 > Subway
 
@@ -37,30 +37,30 @@ Data source - TTC bus, subway. streetcar delay data : [Open Data Catalogue - Cit
 |Incident|The description of the delay-causing incident|Mechanical|
 |Min Delay|The delay, in minutes, to the schedule for the following bus|10|
 |Min Gap|The total scheduled time, in minutes, from the bus ahead of the following bus|20|
-|Direction|The direction of the bus route where B,b or BW indicates both ways. <br>(On an east west route, it includes both east and west)<br>NB - northbound, SB - southbound, EB - eastbound, WB - westbound|N||
+|Direction|The direction of the bus route where B,b or BW indicates both ways. <br>(On an east-west route, it includes both east and west)<br>NB - northbound, SB - southbound, EB - eastbound, WB - westbound|N||
 |Vehicle|Vehicle number|1057|
 
 ---
 ## Infrastructure
 
-This setup creates VM nstance using gcp and will perform all tasks using the VM.
+This setup creates a VM instance using gcp and will perform all tasks using the VM.
 
-**(Note)** Terraform has to be used in a local setup as it the VM will be created using terraform
+**(Note)** Terraform has to be used in a local setup as the VM will be created using Terraform
 
 Architecture Diagram (ETL pipeline) :
 
 ![diagram](images/image.png)
 
-- We will use **Terraform** to setup the infrastructure 
+- We will use **Terraform** to set up the infrastructure 
 - We will use a **VM instance** to run everything
 - We will use **Docker** to run Airflow inside the VM
 - We will use **Airflow** to orchestrate the entire pipeline
 - We will **gcs** as our data lake and **BigQuery** as our data warehouse
 - We will use Spark to process, transform and clean the data
 
-> **Processing** : Batch using spark   
-**Frequency** : Every year (scheduled using Airflow)   
-Can also be increased to every month but that is not cost effective
+> **Processing**: Batch using spark   
+**Frequency**: Every year (scheduled using Airflow)   
+Can also be increased to every month but that is not cost-effective
 
 Airflow Dags :
 
