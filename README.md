@@ -1,6 +1,6 @@
 # TTC Delay Analytics
 
-Analyzing TTC bus, subway & streetcar delay data to identify delay hotspots, root causes, and find valuable insights by creating an ETL (Extract, Transform, Load) pipeline and using Looker Studio to create dashboards.
+Analyzing Toronto public transit delay data to identify delay hotspots, root causes, and find valuable insights by creating an ETL (Extract, Transform, Load) pipeline and using Looker Studio to create dashboards.
 
 ![diagram](images/image.png)
 
