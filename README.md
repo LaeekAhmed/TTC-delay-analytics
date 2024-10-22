@@ -10,7 +10,7 @@ Data source - TTC bus, subway. streetcar delay data : [Open Data Catalogue - Cit
 
 ### Understanding the source data
 
-> Subway
+**1. Subway**
 
 |Field Name|Description|Example|
 |---|---|---|
@@ -25,7 +25,7 @@ Data source - TTC bus, subway. streetcar delay data : [Open Data Catalogue - Cit
 |Line|TTC subway line i.e. YU, BD, SHP, and SRT|YU|
 |Vehicle|TTC train number|5961|
 
-> Bus & Streetcar
+**2. Bus & Streetcar**
 
 |Field Name|Description|Example|
 |---|---|---|
@@ -40,38 +40,33 @@ Data source - TTC bus, subway. streetcar delay data : [Open Data Catalogue - Cit
 |Direction|The direction of the bus route where B,b or BW indicates both ways. <br>(On an east-west route, it includes both east and west)<br>NB - northbound, SB - southbound, EB - eastbound, WB - westbound|N||
 |Vehicle|Vehicle number|1057|
 
----
 ## Infrastructure
-
-This setup creates a VM instance using gcp and will perform all tasks using the VM.
-
-**(Note)** Terraform has to be used in a local setup as the VM will be created using Terraform
-
-Architecture Diagram (ETL pipeline) :
 
 ![diagram](images/image.png)
 
-- We will use **Terraform** to set up the infrastructure 
-- We will use a **VM instance** to run everything
-- We will use **Docker** to run Airflow inside the VM
-- We will use **Airflow** to orchestrate the entire pipeline
-- We will **gcs** as our data lake and **BigQuery** as our data warehouse
-- We will use Spark to process, transform and clean the data
+- Used **Terraform** to set up the infrastructure 
+- used a google cloud **VM instance** to run everything
+- Used **GCS** (google cloud storage) as our data lake and **BigQuery** as our data warehouse
+- Used use **Spark** to process, transform and clean the data
+- Used **Docker** to run Airflow inside the VM
+- Used **Airflow** to automate this entire process and run it at scheduled intervals to keep the data up to date.
 
-> **Processing**: Batch using spark   
-**Frequency**: Every year (scheduled using Airflow)   
-Can also be increased to every month but that is not cost-effective
+Terraform will be run on the local setup to setup up the VM instance on google cloud platform which will then be be used to perform all 3 tasks (Extract, Transform, Load)
 
-Airflow Dags :
+> [!NOTE]
+> Data is processed in batches using spark (scheduled yearly using Airflow)  
+> Can also be increased to every month but that is not cost-effective
+
+**Airflow DAGs (Directed Acyclic Graphs)**
+
+1. [src_to_gcs_dag.py](Airflow/dags/src_to_gcs_dag.py)
+downloads data from the Toronto open portal website, converts it to parquet form, loads it into gcs bucket and removes it from the VM's local file system once it is available on the cloud.
 
 ![Alt text](images/image-5.png)
 
-[src_to_gcs_dag.py](Airflow/dags/src_to_gcs_dag.py)
-downloads data from the Toronto open portal website, converts it to parquet form, loads it into gcs bucket and removes it from local folder once it is available on the cloud.
+2. [dataproc_job_dag.py](Airflow/dags/dataproc_job_dag.py) uploads the main python file [spark_job.py](Airflow/dags/spark_job.py) for running the spark job to the gcs bucket (so dataproc can fetch it), set the service account which authorizes the airflow container to work with gcp services, create a cluster, run the job and then delete it to avoid idle running costs.
 
 ![Alt text](images/image-6.png)
-
-[dataproc_job_dag.py](Airflow/dags/dataproc_job_dag.py) uploads the main python file [spark_job.py](Airflow/dags/spark_job.py) for running the spark job to gcs bucket so dataproc can fetch it, set the service account which authorizes the airflow container to work with gcp services, create a cluster, run the job and then delete it (saves cost)
 
 ## Dashboard
 
